@@ -1,19 +1,32 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { baseUrl } from '../shared/baseUrl';
+import { Loading } from './LoadingComponent';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 function RenderLeader({leader}){
     return(<div>
         <Media>
-        <Media className="i" object src={leader.image} alt={leader.name} />
+        <Stagger in>
+        <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+        <Media className="i" object src={baseUrl + leader.image} alt={leader.name} />
         <br/>
-        <Media body>
+        <Media body> 
+        <Fade in>
                     <Media heading>{leader.name}</Media>
                      <div>   {leader.designation} </div>
                      <br></br>
                      <div>    {leader.description} </div>
                      <br></br>
+                     </Fade>
                 </Media>
+                </FadeTransform>
+                </Stagger>
         </Media>
     </div>
     );
@@ -21,13 +34,42 @@ function RenderLeader({leader}){
 }
 
 
-
 function About(props) {
-    const leaders = props.leaders.map((leader) => {
+   /* const leaders = props.leaders.map((leader) => {
         return (
            <RenderLeader leader = {leader} />
         );
-    });
+    });*/
+    const leaders = props.leaders.leaders.map((leader) => {
+            
+        return (
+            <div  className="col-12 col-md-5 m-1">
+                <RenderLeader leader = {leader} />
+            </div>
+          );
+    } );
+    
+    if (props.leaders.isLoading) {
+        return(
+            <div className="container">
+                <div className="row">            
+                    <Loading />
+                </div>
+            </div>
+        );
+    }
+    else if (props.leaders.errMess) {
+        return(
+            <div className="container">
+                <div className="row"> 
+                    <div className="col-12">
+                        <h4>{props.leaders.errMess}</h4>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
 
     return(
         <div className="container">

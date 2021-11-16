@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
-import { Breadcrumb, BreadcrumbItem,Button, Row, Col, Label } from 'reactstrap';
-import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Breadcrumb, BreadcrumbItem,Button, Row, Col, Label, timeoutsShape } from 'reactstrap';
+import { Control, Form, Errors, actions } from 'react-redux-form';
 import { Link } from 'react-router-dom';
+import { FadeTransform} from 'react-animation-components';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length >= len);
 const isNumber = (val) => !isNaN(Number(val));
 const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
+
+
+
+
+
+
+
+
 
 class Contact extends Component {
     
@@ -36,8 +45,10 @@ class Contact extends Component {
         
     }
     handleSubmit(values) {
-        console.log('Current State is: ' + JSON.stringify(values));
+        this.props.postFeedback(values.firstname,values.lastname,values.telnum,values.email,values.agree,values.contactType,values.message)
         alert('Current State is: ' + JSON.stringify(values));
+        console.log('Current State is: ' + JSON.stringify(values));
+        this.props.resetFeedbackForm();
         // event.preventDefault();
     }
 /*
@@ -91,6 +102,10 @@ class Contact extends Component {
         return errors;
     }
     */
+
+    
+
+
     render() {
       //  const errors = this.validate(this.state.firstname, this.state.lastname, this.state.telnum, this.state.email);
     return(
@@ -136,7 +151,12 @@ class Contact extends Component {
                       <h3>Send us your Feedback</h3>
                    </div>
                     <div className="col-12 col-md-9">
-                    <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                    <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+                    <Form model="feedback" onSubmit={(values) => this.handleSubmit(values)}>
                     <Row className="form-group">
                                 <Label htmlFor="firstname" md={2}>First Name</Label>
                                 <Col md={10}>
@@ -259,7 +279,8 @@ class Contact extends Component {
                                     </Button>
                                 </Col>
                             </Row>
-                        </LocalForm>
+                        </Form>
+                        </FadeTransform>
                         {/* 
                       <Form onSubmit={this.handleSubmit}>
                             <FormGroup row>
